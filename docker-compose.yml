@@ -1,0 +1,14 @@
+version: "3"
+services:
+  db:
+    container_name: eigendb
+    image: postgres:11.1
+    environment:
+      POSTGRES_USER: eigen
+      POSTGRES_PASSWORD: eigenpass
+      POSTGRES_DB: eigen
+      PGPASSWORD: eigenpass
+    volumes:
+      - ./docker/postgresql/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
