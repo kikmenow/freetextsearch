@@ -3,3 +3,4 @@ venv
 *.pyo
 *.pc
 docker
+__pycache__/
