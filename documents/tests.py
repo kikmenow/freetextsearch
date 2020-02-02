@@ -42,7 +42,7 @@ def test_search_endpoint_can_return_documents_single_word_query(api_client, crea
     document = Document(title=title(), content=create_content(5))
     document.save()
     word = document.content.split(' ')[0]
-    result = api_client.get(f"{SEARCH_ENDPOINT}?search={word}")
+    result = api_client.get(f"{SEARCH_ENDPOINT}?term={word}")
     assert result.data[word]['documents'][0] == document.title
 
 
@@ -53,7 +53,7 @@ def test_search_endpoint_can_return_multiple_documents_single_word_query(api_cli
     first_doc.save()
     second_doc = Document(title=title(), content=word)
     second_doc.save()
-    result = api_client.get(f"{SEARCH_ENDPOINT}?search={word}")
+    result = api_client.get(f"{SEARCH_ENDPOINT}?term={word}")
     assert first_doc.title in result.data[word]['documents']
     assert second_doc.title in result.data[word]['documents']
 
@@ -62,17 +62,23 @@ def test_search_endpoint_can_return_multiple_documents_single_word_query(api_cli
 def test_search_endpoint_can_return_documents_multi_word_query(api_client):
     Document(title="foo", content="foo bar baz").save()
     Document(title="bar", content="bar bar baz").save()
-    result = api_client.get(f"{SEARCH_ENDPOINT}?search=foo&search=bar")
+    result = api_client.get(f"{SEARCH_ENDPOINT}?term=foo&term=baz")
     assert result.data['foo']['documents'] == ["foo"]
-    assert result.data['bar']['documents'] == ["foo", "bar"]
+    assert result.data['baz']['documents'] == ["foo", "bar"]
 
+
+@pytest.mark.django_db
+def test_search_endpoint_can_return_obama_document_for_various_terms(api_client, obama_speech: Document):
+    result = api_client.get(f"{SEARCH_ENDPOINT}?term=let&term=me&term=begin")
+    assert obama_speech.title in result.data['let']['documents']
+    assert obama_speech.title in result.data['begin']['documents']
 
 # @pytest.mark.django_db
 # def test_search_endpoint_can_return_instance_count_single_word_query(api_client):
 #     Document(title="foo", content="foo foo foo").save()
 #     Document(title="bar", content="bar bar foo").save()
 #     # TODO: abstract api_client away under a search function fed in by pytest
-#     result = api_client.get(f"{SEARCH_ENDPOINT}?search=foo&search=bar")
+#     result = api_client.get(f"{SEARCH_ENDPOINT}?term=foo&term=bar")
 #     assert result.data['foo']['count'] == 4
 #     assert result.data['bar']['count'] == 2
 

@@ -1,9 +1,11 @@
 import pytest
 from rest_framework.test import APIClient
+from string import ascii_uppercase as letters, digits
 from typing import List
 import itertools
-from string import ascii_uppercase as letters, digits
-
+import os
+from .models import Document
+dir_path = os.path.dirname(os.path.realpath(__file__))
 DOCUMENT_ENDPOINT = "/api/document/"
 SEARCH_ENDPOINT = "/api/search/"
 
@@ -57,6 +59,16 @@ def create_sentences(random_words):
 		return [" ".join(random_words()) for i in range(sentence_count - 1)]
 
 	return __create_sentences
+
+
+@pytest.fixture
+def obama_speech(post_document):
+	file_name = 'obama.txt'
+	with open(dir_path+'/' + file_name, 'r') as fp:
+		content = fp.read()
+	document = Document(content=content, title=file_name)
+	document.save()
+	return document
 
 
 @pytest.fixture

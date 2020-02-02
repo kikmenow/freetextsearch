@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Document, SearchResult
+from typing import List
 
 
 class DocumentSerializer(serializers.ModelSerializer):
@@ -16,11 +17,15 @@ class DocumentSerializer(serializers.ModelSerializer):
 
 class SearchResultSerializer(serializers.Serializer):
     documents = serializers.SerializerMethodField()
+    # count = serializers.SerializerMethodField()
 
-    def get_documents(self, obj: SearchResult):
+    def get_documents(self, obj: SearchResult) -> List[str]:
         return list(
             obj.documents.values_list('title', flat=True)
         )
+
+    # def get_count(self, obj: SearchResult) -> int:
+    #     return 1
 
     def update(self, instance, validated_data):
         pass

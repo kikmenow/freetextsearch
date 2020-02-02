@@ -17,7 +17,7 @@ def get_documents_by_search_term(term: str) -> QuerySet:
 
 @api_view(['GET'])
 def search(request):
-    search_terms = request.GET.getlist('search')
+    search_terms = request.GET.getlist('term')
     if not search_terms:
         return Response(status=400)
     search_results = [

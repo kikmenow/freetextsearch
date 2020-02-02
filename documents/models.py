@@ -4,8 +4,8 @@ from django.db.models.query import QuerySet
 
 
 class Document(models.Model):
-	title = models.CharField(max_length=30)
-	content = models.TextField(default="")
+	title = models.CharField(max_length=30, null=False)
+	content = models.TextField(default="", null=False)
 
 
 @dataclass

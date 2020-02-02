@@ -28,3 +28,5 @@ The import will then occur via the API over a network (That way the DB is comple
 
 
 NB: "MOST FREQUEST". There needs to be some kind of ranking to these results.
+
+Started to find limitations with using postgres free text search. Some words it just doesn't want to pick up. Investigating later.
