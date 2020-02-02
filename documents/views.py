@@ -10,23 +10,21 @@ class DocumentViewSet(viewsets.ModelViewSet):
     serializer_class = DocumentSerializer
 
 
+def get_documents_by_search_term(term: str):
+    return list(
+        Document.objects.filter(content__search=term).values_list('title', flat=True)
+    )
+
+
 @api_view(['GET'])
 def search(request):
-    """
-    Initially we will use request.GET['search']
-    but afterwards we will use request.GET.getlist('search') to take in multiple words/phrases simultaneously.
-    """
-    if 'search' not in request.GET:
+    search_terms = request.GET.getlist('search')
+    if not search_terms:
         return Response(status=400)
-    documents = list(
-        Document.objects.filter(content__search=request.GET['search']).values_list('title', flat=True)
-    )
+
+    search_results = [{"documents": get_documents_by_search_term(search_term)} for search_term in search_terms]
     return Response(
-            {
-                request.GET['search']: {
-                    "documents": documents
-                }
-            }
+        dict(zip(search_terms, search_results))
     )
 
 

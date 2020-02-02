@@ -38,6 +38,7 @@ def test_search_endpoint_returns_400_if_no_search_terms(api_client, create_conte
 
 @pytest.mark.django_db
 def test_search_endpoint_can_return_documents_single_word_query(api_client, create_content, title):
+    # TODO: Find a way to tidy up creation of django models
     document = Document(title=title(), content=create_content(5))
     document.save()
     word = document.content.split(' ')[0]
@@ -57,13 +58,13 @@ def test_search_endpoint_can_return_multiple_documents_single_word_query(api_cli
     assert second_doc.title in result.data[word]['documents']
 
 
-# @pytest.mark.django_db
-# def test_search_endpoint_can_return_documents_multi_word_query(api_client):
-#     Document(title="foo", content="foo bar baz").save()
-#     Document(title="bar", content="bar bar baz").save()
-#     result = api_client.get(f"{SEARCH_ENDPOINT}?search=foo&search=bar")
-#     assert result.data['foo']['documents'] == ["foo"]
-#     assert result.data['bar']['documents'] == ["foo", "bar"]
+@pytest.mark.django_db
+def test_search_endpoint_can_return_documents_multi_word_query(api_client):
+    Document(title="foo", content="foo bar baz").save()
+    Document(title="bar", content="bar bar baz").save()
+    result = api_client.get(f"{SEARCH_ENDPOINT}?search=foo&search=bar")
+    assert result.data['foo']['documents'] == ["foo"]
+    assert result.data['bar']['documents'] == ["foo", "bar"]
 
 
 # @pytest.mark.django_db
