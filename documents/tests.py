@@ -68,8 +68,13 @@ def test_search_endpoint_can_return_documents_multi_word_query(api_client):
 
 
 # @pytest.mark.django_db
-# def test_search_endpoint_can_return_instance_count_single_word_query():
-#     pass
+# def test_search_endpoint_can_return_instance_count_single_word_query(api_client):
+#     Document(title="foo", content="foo foo foo").save()
+#     Document(title="bar", content="bar bar foo").save()
+#     # TODO: abstract api_client away under a search function fed in by pytest
+#     result = api_client.get(f"{SEARCH_ENDPOINT}?search=foo&search=bar")
+#     assert result.data['foo']['count'] == 4
+#     assert result.data['bar']['count'] == 2
 
 
 # @pytest.mark.django_db
