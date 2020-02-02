@@ -5,12 +5,17 @@ import itertools
 from string import ascii_uppercase as letters, digits
 
 DOCUMENT_ENDPOINT = "/api/document/"
-SEARCH_ENDPOINT = "/search/"
+SEARCH_ENDPOINT = "/api/search/"
 
 
 def generate_word(words=itertools.product(letters, letters, digits, digits, digits)):
 	for word in words:
 		yield "".join(word)
+
+
+@pytest.fixture
+def title():
+	return next(generate_word())
 
 
 @pytest.fixture

@@ -26,3 +26,4 @@ My main assumption I'm making here is that storing *sentences* in their own tabl
 Once the API has been test driven as above, I will test drive some endpoints for saving these documents. I'm thinking the cleanest way to do this is hooking into the save function on the model and destructuring the document as it is saved.
 The import will then occur via the API over a network (That way the DB is completely wrapped with this API with no back doors)
 
+
