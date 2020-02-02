@@ -18,8 +18,7 @@ def search(request):
     """
     if 'search' not in request.GET:
         return Response(status=400)
-    document_queryset = Document.objects.filter(content__search=request.GET['search']).values('title')
-    document_titles = list(document_queryset.get().values())
+    document_titles = Document.objects.filter(content__search=request.GET['search']).values_list('title', flat=True)
     return Response(
         [
             {

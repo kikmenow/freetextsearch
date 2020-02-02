@@ -44,3 +44,46 @@ def test_search_endpoint_can_return_documents_single_word_query(api_client, crea
     result = api_client.get(f"{SEARCH_ENDPOINT}?search={word}")
     assert result.data[0]['documents'][0] == title
     assert result.data[0]['word'] == word
+
+
+@pytest.mark.django_db
+def test_search_endpoint_can_return_multiple_documents_single_word_query(api_client, create_content, title):
+    identical_content = create_content(5)
+    first_doc = Document(title=title, content=identical_content)
+    first_doc.save()
+    second_doc = Document(title=title, content=identical_content)
+    second_doc.save()
+
+    word = first_doc.content.split(' ')[0]
+    result = api_client.get(f"{SEARCH_ENDPOINT}?search={word}")
+    assert result.data[0]['documents'][0] == title
+    assert result.data[0]['documents'][1] == title
+    assert result.data[0]['word'] == word
+
+
+#
+# @pytest.mark.django_db
+# def test_search_endpoint_can_return_documents_multi_word_query(api_client, create_document, title):
+#     pass
+#
+
+
+
+# @pytest.mark.django_db
+# def test_search_endpoint_can_return_instance_count_single_word_query():
+#     pass
+
+
+# @pytest.mark.django_db
+# def test_search_endpoint_can_return_instance_count_multi_word_query():
+#     pass
+
+
+# @pytest.mark.django_db
+# def test_search_endpoint_can_return_sentences_single_word_query():
+#     pass
+
+
+# @pytest.mark.django_db
+# def test_search_endpoint_can_return_sentences_multi_word_query():
+#     pass
