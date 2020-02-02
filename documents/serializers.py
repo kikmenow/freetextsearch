@@ -2,6 +2,8 @@ from rest_framework import serializers
 from .models import Document, SearchResult, Sentence
 from typing import List
 from django.db.models import Subquery
+from nltk import word_tokenize, Text
+import itertools
 
 
 class SentenceSerializer(serializers.ModelSerializer):
@@ -25,7 +27,7 @@ class DocumentSerializer(serializers.ModelSerializer):
 class SearchResultSerializer(serializers.Serializer):
     documents = serializers.SerializerMethodField()
     sentences = serializers.SerializerMethodField()
-    # count = serializers.SerializerMethodField()
+    count = serializers.SerializerMethodField()
 
     def get_documents(self, obj: SearchResult) -> List[str]:
         documents = Document.objects.filter(
@@ -42,6 +44,10 @@ class SearchResultSerializer(serializers.Serializer):
             obj.sentences.values_list('content', flat=True)
         )
 
-    # def get_count(self, obj: SearchResult) -> int:
-    #     return 4
+    def get_count(self, obj: SearchResult) -> int:
+        sentences = self.get_sentences(obj)
+        tokens = [word_tokenize(sentence) for sentence in sentences]
+        flat_tokens = list(itertools.chain(*tokens))
+        text = Text(flat_tokens)
+        return text.count(obj.search_term)
 

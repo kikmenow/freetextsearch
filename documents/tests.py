@@ -92,14 +92,16 @@ def test_search_endpoint_can_return_sentences_single_word_query(api_client, rand
     assert len(result.data[test_word]['sentences']) == len(positive_results)
 
 
-# @pytest.mark.django_db
-# def test_search_endpoint_can_return_instance_count_single_word_query(api_client):
-#     Document(title="foo", content="foo foo foo").save()
-#     Document(title="bar", content="bar bar foo").save()
-#     # TODO: abstract api_client away under a search function fed in by pytest
-#     result = api_client.get(f"{SEARCH_ENDPOINT}?term=foo&term=bar")
-#     assert result.data['foo']['count'] == 4
-#     assert result.data['bar']['count'] == 2
+@pytest.mark.django_db
+def test_search_endpoint_can_return_instance_count_single_word_query(api_client):
+    Document(title="foo", content="foo foo foo").save()
+    Document(title="bar", content="bar bar foo").save()
+    # TODO: abstract api_client away under a search function fed in by pytest
+    result = api_client.get(f"{SEARCH_ENDPOINT}?term=foo&term=bar")
+    assert result.data['foo']['count'] == 4
+    assert result.data['bar']['count'] == 2
+
+# TODO: Test drive cleaning/casing/removal of odd characters inside sentences.
 
 # TODO: The reason this is failing is due to postgres config. Will follow up later.
 # @pytest.mark.django_db

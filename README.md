@@ -27,6 +27,16 @@ Once the API has been test driven as above, I will test drive some endpoints for
 The import will then occur via the API over a network (That way the DB is completely wrapped with this API with no back doors)
 
 
-NB: "MOST FREQUEST". There needs to be some kind of ranking to these results.
+NB: "MOST FREQUENT". There needs to be some kind of ranking to these results.
 
 Started to find limitations with using postgres free text search. Some words it just doesn't want to pick up. Turns out that its a config somewhere inside postgres, I need to change the type of tsvector it generates
+
+# Installation
+generate pip env from requirements.txt
+
+`source venv/bin/activate` 
+
+`python -m nltk.downloader all`
+
+-----------
+When testing the count field I found that my count was case sensitive. Data needs to be cleaned on the way in. 
