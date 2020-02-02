@@ -11,6 +11,7 @@ SEARCH_ENDPOINT = "/api/search/"
 
 
 def generate_word(words=itertools.product(letters, letters, digits, digits, digits)):
+	"""Generator function for giving list of unique words"""
 	for word in words:
 		yield "".join(word)
 
@@ -25,7 +26,10 @@ def title():
 
 @pytest.fixture
 def random_words():
+	"""Returns a helper function that creates a list of random words"""
+
 	def __random_words():
+		"""Generate a list of random words"""
 		return ["WORD"+next(generate_word()) for _ in range(10)]
 
 	return __random_words
@@ -56,7 +60,7 @@ def create_sentences(random_words):
 
 	def __create_sentences(sentence_count: int):
 		"""Generate and return random sentences"""
-		return [" ".join(random_words()) for i in range(sentence_count - 1)]
+		return [" ".join(random_words()) for i in range(sentence_count)]
 
 	return __create_sentences
 

@@ -29,4 +29,4 @@ The import will then occur via the API over a network (That way the DB is comple
 
 NB: "MOST FREQUEST". There needs to be some kind of ranking to these results.
 
-Started to find limitations with using postgres free text search. Some words it just doesn't want to pick up. Investigating later.
+Started to find limitations with using postgres free text search. Some words it just doesn't want to pick up. Turns out that its a config somewhere inside postgres, I need to change the type of tsvector it generates

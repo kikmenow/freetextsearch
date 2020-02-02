@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .models import Document, SearchResult
+from .models import Document, SearchResult, Sentence
 from .serializers import DocumentSerializer, SearchResultSerializer
 from django.db.models.query import QuerySet
 
@@ -22,7 +22,9 @@ def search(request):
         return Response(status=400)
     search_results = [
         SearchResultSerializer(
-            SearchResult(documents=get_documents_by_search_term(search_term))
+            SearchResult(
+                documents=get_documents_by_search_term(search_term)
+            )
         ).data for search_term in search_terms
     ]
     return Response(
