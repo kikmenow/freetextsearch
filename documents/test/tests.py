@@ -75,6 +75,7 @@ def test_search_endpoint_can_return_instance_count_single_word_query(search):
     assert result.data['foo']['count'] == 4
     assert result.data['bar']['count'] == 2
 
+
 @pytest.mark.django_db
 def test_search_endpoint_is_case_insensitive(search, post_document):
     post_document(content="Foo. foo. Foo")
@@ -82,10 +83,13 @@ def test_search_endpoint_is_case_insensitive(search, post_document):
     assert result.data['foo']['count'] == 3
     assert result.data['Foo']['count'] == 3
 
-# TODO: The reason this is failing is due to postgres config. Will follow up later.
-# @pytest.mark.django_db
-# def test_search_endpoint_can_return_obama_document_for_various_terms(api_client, obama_speech: Document):
-#     result = api_client.get(f"{SEARCH_ENDPOINT}?term=let&term=me&term=begin")
-#     assert obama_speech.title in result.data['let']['documents']
-#     assert obama_speech.title in result.data['me']['documents']
-#     assert obama_speech.title in result.data['begin']['documents']
+
+@pytest.mark.django_db
+def test_search_endpoint_can_return_obama_document_for_various_terms(search, obama_speech: Document):
+    result = search("let", "me", "begin")
+    assert obama_speech.title in result.data['let']['documents']
+    assert obama_speech.title in result.data['begin']['documents']
+
+# TODO: Sort results by relevance
+# TODO: Find a pretty way to display the report!
+# TODO: Finish README.md
