@@ -21,5 +21,5 @@ class Sentence(models.Model):
 
 @dataclass
 class SearchResult:
-	documents: QuerySet
 	sentences: QuerySet
+	search_term: str

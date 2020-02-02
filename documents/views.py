@@ -27,8 +27,8 @@ def search(request):
     search_results = [
         SearchResultSerializer(
             SearchResult(
-                documents=get_documents_by_search_term(search_term),
-                sentences=get_sentences_by_search_term(search_term)
+                sentences=get_sentences_by_search_term(search_term),
+                search_term=search_term
             )
         ).data for search_term in search_terms
     ]

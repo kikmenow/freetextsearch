@@ -2,6 +2,17 @@ import pytest
 from .conftest import SEARCH_ENDPOINT
 from .models import Document, Sentence
 
+
+@pytest.mark.django_db
+def test_saving_document_creates_sentences():
+    # TODO: Move this test elsewhere
+    Document(title="bar", content="bar bar baz. foo foo.").save()
+    sentences = list(Sentence.objects.values_list('content', flat=True))
+    assert "bar bar baz" in sentences
+    assert "foo foo" in sentences
+    assert "" not in sentences
+
+
 # TODO: Refactor document endpoint tests to separate suite
 @pytest.mark.django_db
 def test_document_creation(post_document):
@@ -67,16 +78,6 @@ def test_search_endpoint_can_return_documents_multi_word_query(api_client):
     assert result.data['baz']['documents'] == ["foo", "bar"]
 
 
-
-@pytest.mark.django_db
-def test_saving_document_creates_sentences():
-    Document(title="bar", content="bar bar baz. foo foo.").save()
-    sentences = list(Sentence.objects.values_list('content', flat=True))
-    assert "bar bar baz" in sentences
-    assert "foo foo" in sentences
-    assert "" not in sentences
-
-
 # TODO: perhaps try parameterising these tests with a generator fn instead of calling random_words a lot
 @pytest.mark.django_db
 def test_search_endpoint_can_return_sentences_single_word_query(api_client, random_words, post_document):
@@ -90,9 +91,6 @@ def test_search_endpoint_can_return_sentences_single_word_query(api_client, rand
     assert positive_results[1] in result.data[test_word]['sentences']
     assert len(result.data[test_word]['sentences']) == len(positive_results)
 
-# @pytest.mark.django_db
-# def test_search_endpoint_can_return_sentences_multi_word_query():
-#     pass
 
 # @pytest.mark.django_db
 # def test_search_endpoint_can_return_instance_count_single_word_query(api_client):
@@ -102,11 +100,6 @@ def test_search_endpoint_can_return_sentences_single_word_query(api_client, rand
 #     result = api_client.get(f"{SEARCH_ENDPOINT}?term=foo&term=bar")
 #     assert result.data['foo']['count'] == 4
 #     assert result.data['bar']['count'] == 2
-
-
-# @pytest.mark.django_db
-# def test_search_endpoint_can_return_instance_count_multi_word_query():
-#     pass
 
 # TODO: The reason this is failing is due to postgres config. Will follow up later.
 # @pytest.mark.django_db
