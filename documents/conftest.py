@@ -19,20 +19,20 @@ def generate_word(words=itertools.product(letters, letters, digits, digits, digi
 @pytest.fixture
 def title():
 	def __title():
-		"""Generate a new random title"""
+		"""Generate a new title"""
 		return "TITLE"+next(generate_word())
 	return __title
 
 
 @pytest.fixture
-def random_words():
-	"""Returns a helper function that creates a list of random words"""
+def unique_words():
+	"""Returns a helper function that creates a list of unique words"""
 
-	def __random_words():
-		"""Generate a list of random words"""
+	def __unique_words():
+		"""Generate a list of unique words"""
 		return ["WORD"+next(generate_word()) for _ in range(10)]
 
-	return __random_words
+	return __unique_words
 
 
 @pytest.fixture
@@ -55,7 +55,7 @@ def post_document(api_client: APIClient, create_content_from_sentences):
 
 
 @pytest.fixture
-def create_sentences(random_words):
+def create_sentences(unique_words):
 	"""Returns a helper function that returns a list of sentences with specific length"""
 
 	def __create_sentences(sentence_count: int):
