@@ -15,6 +15,10 @@ def get_documents_by_search_term(term: str) -> QuerySet:
     return Document.objects.filter(content__search=term)
 
 
+def get_sentences_by_search_term(term: str) -> QuerySet:
+    return Sentence.objects.filter(content__search=term)
+
+
 @api_view(['GET'])
 def search(request):
     search_terms = request.GET.getlist('term')
@@ -23,7 +27,8 @@ def search(request):
     search_results = [
         SearchResultSerializer(
             SearchResult(
-                documents=get_documents_by_search_term(search_term)
+                documents=get_documents_by_search_term(search_term),
+                sentences=get_sentences_by_search_term(search_term)
             )
         ).data for search_term in search_terms
     ]

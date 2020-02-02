@@ -23,14 +23,14 @@ class DocumentSerializer(serializers.ModelSerializer):
 
 class SearchResultSerializer(serializers.Serializer):
     documents = serializers.SerializerMethodField()
+    sentences = serializers.SerializerMethodField()
 
     def get_documents(self, obj: SearchResult) -> List[str]:
         return list(
             obj.documents.values_list('title', flat=True)
         )
 
-    def update(self, instance, validated_data):
-        pass
-
-    def create(self, validated_data):
-        pass
+    def get_sentences(self, obj: SearchResult):
+        return list(
+            obj.sentences.values_list('content', flat=True)
+        )

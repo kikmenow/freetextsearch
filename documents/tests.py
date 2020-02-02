@@ -67,29 +67,28 @@ def test_search_endpoint_can_return_documents_multi_word_query(api_client):
     assert result.data['baz']['documents'] == ["foo", "bar"]
 
 
-#
-# @pytest.mark.django_db
-# def test_saving_document_creates_sentences():
-#     # TODO: Refactor in separate suite
-#     Document(title="bar", content="bar bar baz. foo foo.").save()
-#     sentences = list(Sentence.objects.values_list('content', flat=True))
-#     assert "bar bar baz" in sentences
-#     assert "foo foo" in sentences
-#     assert "" not in sentences
+
+@pytest.mark.django_db
+def test_saving_document_creates_sentences():
+    Document(title="bar", content="bar bar baz. foo foo.").save()
+    sentences = list(Sentence.objects.values_list('content', flat=True))
+    assert "bar bar baz" in sentences
+    assert "foo foo" in sentences
+    assert "" not in sentences
 
 
-# # TODO: perhaps try parameterising these tests with a generator fn instead of calling random_words a lot
-# @pytest.mark.django_db
-# def test_search_endpoint_can_return_sentences_single_word_query(api_client, random_words, post_document):
-#     # Todo: use random word
-#     test_word = "word"
-#     positive_results = [" ".join(random_words()) + f" {test_word}", " ".join(random_words()) + f" {test_word}"]
-#     negative_results = [" ".join(random_words())]
-#     post_document(sentences=(positive_results + negative_results))
-#     result = api_client.get(f"{SEARCH_ENDPOINT}?term={test_word}")
-#     assert positive_results[0] in result.data[test_word]['sentences']
-#     assert positive_results[1] in result.data[test_word]['sentences']
-#     assert len(result.data[test_word]['sentences']) == len(positive_results)
+# TODO: perhaps try parameterising these tests with a generator fn instead of calling random_words a lot
+@pytest.mark.django_db
+def test_search_endpoint_can_return_sentences_single_word_query(api_client, random_words, post_document):
+    # Todo: use random word
+    test_word = "word"
+    positive_results = [" ".join(random_words()) + f" {test_word}", " ".join(random_words()) + f" {test_word}"]
+    negative_results = [" ".join(random_words())]
+    post_document(sentences=(positive_results + negative_results))
+    result = api_client.get(f"{SEARCH_ENDPOINT}?term={test_word}")
+    assert positive_results[0] in result.data[test_word]['sentences']
+    assert positive_results[1] in result.data[test_word]['sentences']
+    assert len(result.data[test_word]['sentences']) == len(positive_results)
 
 # @pytest.mark.django_db
 # def test_search_endpoint_can_return_sentences_multi_word_query():
