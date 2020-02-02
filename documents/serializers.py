@@ -13,13 +13,6 @@ class SentenceSerializer(serializers.ModelSerializer):
 
 
 class DocumentSerializer(serializers.ModelSerializer):
-    # TODO: remove sentences from this serialiser.
-    sentences = serializers.SlugRelatedField(
-        many=True,
-        read_only=True,
-        slug_field='content'
-    )
-
     class Meta:
         model = Document
         fields = "__all__"
