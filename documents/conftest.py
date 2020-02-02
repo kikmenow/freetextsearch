@@ -15,13 +15,16 @@ def generate_word(words=itertools.product(letters, letters, digits, digits, digi
 
 @pytest.fixture
 def title():
-	return next(generate_word())
+	def __title():
+		"""Generate a new random title"""
+		return "TITLE"+next(generate_word())
+	return __title
 
 
 @pytest.fixture
 def random_words():
 	def __random_words():
-		return [next(generate_word()) for _ in range(10)]
+		return ["WORD"+next(generate_word()) for _ in range(10)]
 
 	return __random_words
 

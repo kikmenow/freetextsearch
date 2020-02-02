@@ -18,12 +18,15 @@ def search(request):
     """
     if 'search' not in request.GET:
         return Response(status=400)
-    document_titles = Document.objects.filter(content__search=request.GET['search']).values_list('title', flat=True)
-    return Response(
-        [
-            {
-                "documents": document_titles,
-                "word": request.GET['search']
-            }
-        ]
+    documents = list(
+        Document.objects.filter(content__search=request.GET['search']).values_list('title', flat=True)
     )
+    return Response(
+            {
+                request.GET['search']: {
+                    "documents": documents
+                }
+            }
+    )
+
+

@@ -12,4 +12,3 @@ class DocumentSerializer(serializers.ModelSerializer):
     # TODO: Don't respond with sentences. Not required.
     def get_sentences(self, obj):
         return [sentence.lstrip() for sentence in obj.content.split('.')]
-
