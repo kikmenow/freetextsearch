@@ -1,5 +1,4 @@
 import pytest
-from documents.test.conftest import SEARCH_ENDPOINT
 from documents.models import Document, Sentence
 
 
@@ -24,73 +23,64 @@ def test_document_creation(post_document):
 
 
 @pytest.mark.django_db
-def test_search_endpoint_returns_400_if_no_search_terms(api_client, create_content):
+def test_search_endpoint_returns_400_if_no_search_terms(search, create_content):
     document = Document(title='example.txt', content=create_content(5))
     document.save()
-    result = api_client.get(f"{SEARCH_ENDPOINT}")
+    result = search()
+    assert result.status_code == 400
+    assert "Missing search terms" in result.data
+    result = search("")
     assert result.status_code == 400
     assert "Missing search terms" in result.data
 
 
 @pytest.mark.django_db
-def test_search_endpoint_can_return_documents_single_word_query(api_client, create_content, title):
-    # TODO: Find a way to tidy up creation of django models
-    document = Document(title=title(), content=create_content(5))
-    document.save()
-    word = document.content.split(' ')[0]
-    result = api_client.get(f"{SEARCH_ENDPOINT}?term={word}")
-    assert result.data[word]['documents'][0] == document.title
-
-
-@pytest.mark.django_db
-def test_search_endpoint_can_return_multiple_documents_single_word_query(api_client, title):
+def test_search_endpoint_can_return_multiple_documents_single_word_query(search, title):
     word = "hello"
     first_doc = Document(title=title(), content=word)
     first_doc.save()
     second_doc = Document(title=title(), content=word)
     second_doc.save()
-    result = api_client.get(f"{SEARCH_ENDPOINT}?term={word}")
+    result = search(word)
     assert first_doc.title in result.data[word]['documents']
     assert second_doc.title in result.data[word]['documents']
 
 
 @pytest.mark.django_db
-def test_search_endpoint_can_return_documents_multi_word_query(api_client):
+def test_search_endpoint_can_return_documents_multi_word_query(search):
     Document(title="foo", content="foo bar baz").save()
     Document(title="bar", content="bar bar baz").save()
-    result = api_client.get(f"{SEARCH_ENDPOINT}?term=foo&term=baz")
+    result = search("foo", "baz")
     assert result.data['foo']['documents'] == ["foo"]
     assert result.data['baz']['documents'] == ["foo", "bar"]
 
 
-# TODO: perhaps try parameterising these tests with a generator fn instead of calling unique_words a lot
 @pytest.mark.django_db
-def test_search_endpoint_can_return_sentences_single_word_query(api_client, unique_words, post_document):
-    # Todo: use random word
-    test_word = "word"
-    positive_results = [" ".join(unique_words()) + f" {test_word}", " ".join(unique_words()) + f" {test_word}"]
+def test_search_endpoint_can_return_sentences_single_word_query(unique_words, post_document, search):
+    word = unique_words()[0]
+    positive_results = [" ".join(unique_words()) + f" {word}", " ".join(unique_words()) + f" {word}"]
     negative_results = [" ".join(unique_words())]
     post_document(sentences=(positive_results + negative_results))
-    result = api_client.get(f"{SEARCH_ENDPOINT}?term={test_word}")
-    assert positive_results[0] in result.data[test_word]['sentences']
-    assert positive_results[1] in result.data[test_word]['sentences']
-    assert len(result.data[test_word]['sentences']) == len(positive_results)
+    result = search(word)
+    assert positive_results[0] in result.data[word]['sentences']
+    assert positive_results[1] in result.data[word]['sentences']
+    assert len(result.data[word]['sentences']) == len(positive_results)
 
 
 @pytest.mark.django_db
-def test_search_endpoint_can_return_instance_count_single_word_query(api_client):
+def test_search_endpoint_can_return_instance_count_single_word_query(search):
     Document(title="foo", content="foo foo foo").save()
     Document(title="bar", content="bar bar foo").save()
-    # TODO: abstract api_client away under a search function fed in by pytest
-    result = api_client.get(f"{SEARCH_ENDPOINT}?term=foo&term=bar")
+    result = search("foo", "bar")
     assert result.data['foo']['count'] == 4
     assert result.data['bar']['count'] == 2
 
 @pytest.mark.django_db
-def test_search_endpoint_is_case_insensitive(api_client, post_document):
+def test_search_endpoint_is_case_insensitive(search, post_document):
     post_document(content="Foo. foo. Foo")
-    result = api_client.get(f"{SEARCH_ENDPOINT}?term=foo")
+    result = search("foo", "Foo")
     assert result.data['foo']['count'] == 3
+    assert result.data['Foo']['count'] == 3
 
 # TODO: The reason this is failing is due to postgres config. Will follow up later.
 # @pytest.mark.django_db

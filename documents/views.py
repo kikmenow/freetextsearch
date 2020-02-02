@@ -22,6 +22,7 @@ def get_sentences_by_search_term(term: str) -> QuerySet:
 @api_view(['GET'])
 def search(request):
     search_terms = request.GET.getlist('term')
+    search_terms = list(filter(None, search_terms))
     if not search_terms:
         return Response(status=400, data="Missing search terms")
     search_results = [

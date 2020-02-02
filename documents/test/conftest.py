@@ -17,6 +17,19 @@ def generate_word(words=itertools.product(letters, letters, digits, digits, digi
 
 
 @pytest.fixture
+def search(api_client):
+	"""Returns helper that abstracts the API client away from the test suite for search queries"""
+	def __search(*args):
+		"""Perform a search against the search endpoint"""
+		if args:
+			query_string = "term=" + "&term=".join(list(args))
+		else:
+			query_string = ""
+		return api_client.get(f"{SEARCH_ENDPOINT}?{query_string}")
+
+	return __search
+
+@pytest.fixture
 def title():
 	def __title():
 		"""Generate a new title"""

@@ -44,5 +44,5 @@ class SearchResultSerializer(serializers.Serializer):
         flat_tokens = list(itertools.chain(*tokens))
         lower_case_tokens = [token.lower() for token in flat_tokens]
         text = Text(lower_case_tokens)
-        return text.count(obj.search_term)
+        return text.count(obj.search_term.lower())
 
