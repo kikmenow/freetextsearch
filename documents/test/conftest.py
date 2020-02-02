@@ -4,7 +4,7 @@ from string import ascii_uppercase as letters, digits
 from typing import List
 import itertools
 import os
-from .models import Document
+from documents.models import Document
 dir_path = os.path.dirname(os.path.realpath(__file__))
 DOCUMENT_ENDPOINT = "/api/document/"
 SEARCH_ENDPOINT = "/api/search/"
@@ -60,7 +60,7 @@ def create_sentences(unique_words):
 
 	def __create_sentences(sentence_count: int):
 		"""Generate and return random sentences"""
-		return [" ".join(random_words()) for i in range(sentence_count)]
+		return [" ".join(unique_words()) for i in range(sentence_count)]
 
 	return __create_sentences
 

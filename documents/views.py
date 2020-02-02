@@ -23,7 +23,7 @@ def get_sentences_by_search_term(term: str) -> QuerySet:
 def search(request):
     search_terms = request.GET.getlist('term')
     if not search_terms:
-        return Response(status=400)
+        return Response(status=400, data="Missing search terms")
     search_results = [
         SearchResultSerializer(
             SearchResult(

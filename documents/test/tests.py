@@ -1,11 +1,10 @@
 import pytest
-from .conftest import SEARCH_ENDPOINT
-from .models import Document, Sentence
+from documents.test.conftest import SEARCH_ENDPOINT
+from documents.models import Document, Sentence
 
 
 @pytest.mark.django_db
 def test_saving_document_creates_sentences():
-    # TODO: Move this test elsewhere
     Document(title="bar", content="bar bar baz. foo foo.").save()
     sentences = list(Sentence.objects.values_list('content', flat=True))
     assert "bar bar baz" in sentences
@@ -13,7 +12,6 @@ def test_saving_document_creates_sentences():
     assert "" not in sentences
 
 
-# TODO: Refactor document endpoint tests to separate suite
 @pytest.mark.django_db
 def test_document_creation(post_document):
     result = post_document(
@@ -30,8 +28,8 @@ def test_search_endpoint_returns_400_if_no_search_terms(api_client, create_conte
     document = Document(title='example.txt', content=create_content(5))
     document.save()
     result = api_client.get(f"{SEARCH_ENDPOINT}")
-    # TODO: Add error message to body
     assert result.status_code == 400
+    assert "Missing search terms" in result.data
 
 
 @pytest.mark.django_db
@@ -65,13 +63,13 @@ def test_search_endpoint_can_return_documents_multi_word_query(api_client):
     assert result.data['baz']['documents'] == ["foo", "bar"]
 
 
-# TODO: perhaps try parameterising these tests with a generator fn instead of calling random_words a lot
+# TODO: perhaps try parameterising these tests with a generator fn instead of calling unique_words a lot
 @pytest.mark.django_db
-def test_search_endpoint_can_return_sentences_single_word_query(api_client, random_words, post_document):
+def test_search_endpoint_can_return_sentences_single_word_query(api_client, unique_words, post_document):
     # Todo: use random word
     test_word = "word"
-    positive_results = [" ".join(random_words()) + f" {test_word}", " ".join(random_words()) + f" {test_word}"]
-    negative_results = [" ".join(random_words())]
+    positive_results = [" ".join(unique_words()) + f" {test_word}", " ".join(unique_words()) + f" {test_word}"]
+    negative_results = [" ".join(unique_words())]
     post_document(sentences=(positive_results + negative_results))
     result = api_client.get(f"{SEARCH_ENDPOINT}?term={test_word}")
     assert positive_results[0] in result.data[test_word]['sentences']
