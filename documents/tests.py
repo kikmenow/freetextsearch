@@ -101,7 +101,11 @@ def test_search_endpoint_can_return_instance_count_single_word_query(api_client)
     assert result.data['foo']['count'] == 4
     assert result.data['bar']['count'] == 2
 
-# TODO: Test drive cleaning/casing/removal of odd characters inside sentences.
+@pytest.mark.django_db
+def test_search_endpoint_is_case_insensitive(api_client, post_document):
+    post_document(content="Foo. foo. Foo")
+    result = api_client.get(f"{SEARCH_ENDPOINT}?term=foo")
+    assert result.data['foo']['count'] == 3
 
 # TODO: The reason this is failing is due to postgres config. Will follow up later.
 # @pytest.mark.django_db

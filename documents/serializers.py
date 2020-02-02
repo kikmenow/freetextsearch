@@ -13,6 +13,7 @@ class SentenceSerializer(serializers.ModelSerializer):
 
 
 class DocumentSerializer(serializers.ModelSerializer):
+    # TODO: remove sentences from this serialiser.
     sentences = serializers.SlugRelatedField(
         many=True,
         read_only=True,
@@ -48,6 +49,7 @@ class SearchResultSerializer(serializers.Serializer):
         sentences = self.get_sentences(obj)
         tokens = [word_tokenize(sentence) for sentence in sentences]
         flat_tokens = list(itertools.chain(*tokens))
-        text = Text(flat_tokens)
+        lower_case_tokens = [token.lower() for token in flat_tokens]
+        text = Text(lower_case_tokens)
         return text.count(obj.search_term)
 
