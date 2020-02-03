@@ -104,5 +104,6 @@ def test_search_endpoint_sorts_by_hit_count(search, obama_speech: Document):
     assert result.results[0]['search_term'] == "believe"
     assert result.results[1]['search_term'] == "begin"
 
+# TODO: Choose some words
 # TODO: Find a pretty way to display the report!
 # TODO: Finish README.md
