@@ -16,18 +16,34 @@ def generate_word(words=itertools.product(letters, letters, digits, digits, digi
 		yield "".join(word)
 
 
+class SearchResults:
+
+	def __init__(self, response):
+		self.results = response.data
+
+	@property
+	def search_terms(self):
+		return [result['search_term'] for result in self.results]
+
+	def result_for(self, term):
+		if term not in self.search_terms:
+			return None
+		return next(result for result in self.results if result['search_term'] == term)
+
+
 @pytest.fixture
 def search(api_client):
 	"""Returns helper that abstracts the API client away from the test suite for search queries"""
-	def __search(*args):
+	def __search(*args) -> SearchResults:
 		"""Perform a search against the search endpoint"""
 		if args:
 			query_string = "term=" + "&term=".join(list(args))
 		else:
 			query_string = ""
-		return api_client.get(f"{SEARCH_ENDPOINT}?{query_string}")
+		return SearchResults(api_client.get(f"{SEARCH_ENDPOINT}?{query_string}"))
 
 	return __search
+
 
 @pytest.fixture
 def title():
@@ -84,7 +100,6 @@ def obama_speech(post_document):
 	with open(dir_path+'/' + file_name, 'r') as fp:
 		content = fp.read()
 	document = Document(content=content, title=file_name)
-	document.save()
 	return document
 
 

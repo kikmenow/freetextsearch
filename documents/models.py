@@ -9,7 +9,10 @@ class Document(models.Model):
 
 	def save(self, *args, **kwargs):
 		super(Document, self).save(*args, **kwargs)
-		sentences = list(filter(None, [sentence.lstrip() for sentence in self.content.split('.')]))
+		self.create_sentences(self.content)
+
+	def create_sentences(self, content):
+		sentences = list(filter(None, [sentence.lstrip() for sentence in content.split('.')]))
 		for sentence_content in sentences:
 			Sentence(content=sentence_content, document=self).save()
 

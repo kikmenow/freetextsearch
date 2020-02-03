@@ -73,7 +73,7 @@ example `http://localhost:8000/api/search/?term=done` should tell you that all 6
 1) Please feel free to use several 'terms' in your search: All the info I used to generate 
 my output file was queried in a single GET. For example:  `http://localhost:8000/api/search/?term=done&term=well` 
 
-Remember to prune docker when you're happy! <sub><sup>(or when you're sad. your call)</sup></sub>
+Remember to prune docker when you're happy! <sub><sup>(This can also be done when you're sad.)</sup></sub>
 
 ## Limitations
 - Started to find limitations with using postgres free text search. Some words it just doesn't want to pick up. I did investigate, 

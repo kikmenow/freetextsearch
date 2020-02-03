@@ -22,6 +22,7 @@ class SearchResultSerializer(serializers.Serializer):
     documents = serializers.SerializerMethodField()
     sentences = serializers.SerializerMethodField()
     count = serializers.SerializerMethodField()
+    search_term = serializers.CharField()
 
     def get_documents(self, obj: SearchResult) -> List[str]:
         documents = Document.objects.filter(
