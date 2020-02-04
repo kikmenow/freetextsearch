@@ -58,7 +58,7 @@ python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt 
 python -m nltk.downloader all
-docker-compose up db
+docker-compose rm up db
 ```
 
 1) Run `source venv/bin/activate` and `pytest` in a separate terminal , just to make sure I haven't forgotten something! The tests will be passing on submission
