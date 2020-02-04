@@ -54,14 +54,14 @@ would be cool enough.
 Follow these steps to try out the API:
 1) Install the project and load the DB with docker:
 ```
-python3 -m venv .venv
-source .venv/bin/activate
+python3 -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt 
 python -m nltk.downloader all
 docker-compose up db
 ```
 
-1) In a separate terminal, run `pytest`, just to make sure I haven't forgotten something! The tests will be passing on submission
+1) Run `source venv/bin/activate` and `pytest` in a separate terminal , just to make sure I haven't forgotten something! The tests will be passing on submission
 1) Start the local server with ` python manage.py runserver`
 1) To upload a document, navigate to localhost:8000/api/ and click on `http://localhost:8000/api/document/`. 
 You can use the post form to upload a document with a title and content
@@ -70,7 +70,7 @@ example `http://localhost:8000/api/search/?term=done` should tell you that all 6
 1) Please feel free to use several 'terms' in your search: All the info I used to generate 
 my output file was queried in a single GET. For example:  `http://localhost:8000/api/search/?term=done&term=well` 
 
-Remember to prune docker when you're happy! <sub><sup>(This can also be done when you're sad.)</sup></sub>
+Remember to prune docker when you're happy! <sub><sup>(Pro tip: This can also be done when you're sad.)</sup></sub>
 
 ## Limitations
 - Started to find limitations with using postgres free text search. In decided some words in the free text 
