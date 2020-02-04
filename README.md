@@ -7,14 +7,16 @@
     and sentences. For this task, produce a list of the most 
     frequent interesting words, along with a summary table showing 
     where those words appear (sentences and documents).
+    
+# Why I chose to build an API
+I misinterpreted 'frequent interesting'. I thought it was a more open challenge and I could choose which 
+words I considered interesting, then rank them by frequency. Because I wanted some flexibility in choice, and 
+because I wanted to show you what I can do, I decided to build an API. I did also complete the task (In significantly shorter 
+time than this took), however it is in another repo.
 
-### Initial Proposed Solution
+### Approach
 
-First module: A Django (DRF) API that returns a JSON response containing the above information using 
-Postgres Free Textsearch under the hood. I've left making the output pretty for later (This README is a living document)
-
-First task is to set up a Django Project and App. Then I need to configure a postgres container with docker. 
-(Note to self, make sure to document how to set this up on someone elses machine) 
+First task was to set up a Django Project and App. Then I needed to configure a postgres container with docker. 
 
 Then my will set up my test framework so that I can test drive my changes. Once this is set up I will test drive my 
 API features in the following order:
@@ -40,11 +42,6 @@ appropriate.
 Once the API has been test driven as above, I will test drive some endpoints for saving these documents. 
 I'm thinking the cleanest way to do this is hooking into the save function on the model and destructuring the document as it is saved.
 The import will then occur via the API over a network (That way the DB is completely wrapped with this API with no back doors)
-
-
-NB: "MOST FREQUENT". There needs to be some kind of ranking to these results.
-
-# Why I chose to build an API
 
 
 # Installation and instructions
@@ -76,9 +73,8 @@ my output file was queried in a single GET. For example:  `http://localhost:8000
 Remember to prune docker when you're happy! <sub><sup>(This can also be done when you're sad.)</sup></sub>
 
 ## Limitations
-- Started to find limitations with using postgres free text search. Some words it just doesn't want to pick up. I did investigate, 
-and it seemed like I could fix it by changing the postgres full text search setting to 'simple'. Unfortunately, I had no joy with this.
+- Started to find limitations with using postgres free text search. In decided some words in the free text 
+documents are 'stop words'. However, they weren't interesting words anyway
 
 ## Thank you
-Thanks for setting my a great challenge with enough flexibility to allow me to put a lot of effort in. 
 I had a lot of fun building this service from the ground up. I hope you find it demonstrates not only aptitude but passion.
