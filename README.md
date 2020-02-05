@@ -58,10 +58,12 @@ python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt 
 python -m nltk.downloader all
-docker-compose up db
+docker-compose up -d db
+python manage.py makemigrations
+python manage.py migrate
 ```
 
-1) Run `source venv/bin/activate` and `pytest` in a separate terminal , just to make sure I haven't forgotten something! The tests will be passing on submission
+1) Run `pytest`, just to make sure I haven't forgotten something! The tests will be passing on submission
 1) Start the local server with ` python manage.py runserver`
 1) To upload a document, navigate to localhost:8000/api/ and click on `http://localhost:8000/api/document/`. 
 You can use the post form to upload a document with a title and content
